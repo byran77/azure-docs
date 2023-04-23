@@ -39,25 +39,33 @@ Azure Data Factory provides Windows container support for the Self-Hosted Integr
 1. Open your folder in the shell: 
 
    ```console
-   cd "yourFolderPath"
+   cd <yourFolderPath>
    ```
 
 1. Build the Windows container image:
 
    ```console
-   docker build . -t "yourDockerImageName" 
+   docker build . -t <yourDockerImageName>
    ```
 
 1. Run the Docker container:
 
    ```console
-   docker run -d -e NODE_NAME="irNodeName" -e AUTH_KEY="IR_AUTHENTICATION_KEY" -e ENABLE_HA=true -e HA_PORT=8060 "yourDockerImageName"    
+   docker run -d -e AUTH_KEY=<irAuthenticationKey> 
+      [-e NODE_NAME=<irNodeName>]
+      [-e ENABLE_HA=(true|false)]
+      [-e HA_PORT=<port>]
+      [-e ENABLE_AD=(true|false)]
+      [-e AD_TIME=<expirationTimeInSeconds>]
+      <yourDockerImageName>  
    ```
 
    > [!NOTE]
-   > The `AUTH_KEY` environment variable is mandatory and must be set to the auth key value for your data factory.
-   >
-   > The `NODE_NAME`, `ENABLE_HA` and `HA_PORT` environment variables are optional. If you don't set their values, the command will use default values. The default value of `ENABLE_HA` is `false`, and the default value of `HA_PORT` is `8060`.
+   > The `AUTH_KEY` environment variable is mandatory and must be set to the auth key value for your data factory. The others are optional and have default values when not set.
+   > 
+   > `ENABLE_HA [default: false]` and `HA_PORT [default: 8060]` are used to enable high availability and support multiple nodes registered to the IR.
+   > 
+   > `ENABLE_AD [default: false]` and `AD_TIME [default: 600]` are used for expired nodes auto-deletion. It will remove the offline nodes automatically when a new node registered to the IR. The minimum expiration time of offline nodes in seconds, as well as the default value, is `600`.
 
 ## Container health check
 
